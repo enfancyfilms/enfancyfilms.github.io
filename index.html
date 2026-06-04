@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENFANCY FILMS | Cinematic Storytelling</title>
+    
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           01. CORE SYSTEM & VARIABLES
+           ========================================== */
+        :root {
+            --bg-base: #070606;
+            --bg-charcoal: #110d0d;
+            --accent-muted-red: #7b2424;
+            --accent-burgundy: #4a1515;
+            --text-cream: #f4f0eb;
+            --text-muted: #8c857d;
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-highlight: rgba(244, 240, 235, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; 
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-cream);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        .ambient-light {
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 80vw; height: 80vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, var(--accent-burgundy) 0%, transparent 60%);
+            opacity: 0.18;
+            filter: blur(120px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        /* ==========================================
+           02. PREMIUM MATERIAL LIQUID GLASS SYSTEM
+           ========================================== */
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(25, 20, 20, 0.45) 0%, rgba(12, 9, 9, 0.65) 100%);
+            backdrop-filter: blur(30px) saturate(130%);
+            -webkit-backdrop-filter: blur(30px) saturate(130%);
+            border-top: 1px solid var(--glass-border);
+            border-left: 1px solid var(--glass-border);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+            border-right: 1px solid rgba(0, 0, 0, 0.9);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), var(--glass-highlight), transparent 45%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .liquid-glass:hover::before { opacity: 1; }
+
+        /* ==========================================
+           03. LAYOUT & SECTIONS
+           ========================================== */
+        section {
+            padding: 15vh 6vw;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* SECTION 01: HERO */
+        .hero {
+            height: 100vh; padding: 0;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+
+        .hero-video-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        }
+
+        .hero-video-wrapper::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(7, 6, 6, 0.2) 0%, var(--bg-base) 100%);
+        }
+
+        .hero-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(15%) contrast(120%);
+        }
+
+        .hero-content {
+            text-align: center; z-index: 2; padding: 4rem 6rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(4rem, 13vw, 11rem);
+            letter-spacing: -0.02em; margin-bottom: 1rem; color: var(--text-cream);
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 1.6vw, 1.6rem);
+            color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;
+        }
+
+        /* SECTION 02: WORK */
+        .work-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12vh; 
+            margin-top: 8vh;
+            padding-bottom: 10vh; 
+        }
+
+        .work-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            width: 100%;
+            align-items: center;
+        }
+
+        .work-item {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .yt-format { aspect-ratio: 16 / 9; }
+        .ig-format { aspect-ratio: 9 / 16; width: 100%; max-height: 85vh; }
+
+        .work-item video {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0.85; filter: grayscale(40%);
+        }
+
+        .work-item:hover video {
+            transform: scale(1.04); opacity: 1; filter: grayscale(0%);
+        }
+
+        .work-meta {
+            position: absolute; bottom: 2.5rem; left: 2.5rem; z-index: 3;
+            pointer-events: none;
+        }
+
+        .work-meta h3 { font-size: 2.2rem; text-shadow: 0 4px 16px rgba(0,0,0,0.9); letter-spacing: 0.05em; }
+
+        .row-1 .work-item { grid-column: 1 / 9; } 
+        .row-2 .work-item { grid-column: 5 / 9; } 
+        .row-3 .work-item { grid-column: 4 / 12; } 
+        .row-4 .work-item { grid-column: 8 / 12; } 
+        .row-5 .work-item { grid-column: 2 / 10; } 
+
+        @media (max-width: 768px) {
+            .work-row { display: block; }
+            .work-item { width: 100% !important; margin-bottom: 6vh; }
+            .ig-format { aspect-ratio: 4 / 5; max-height: none; } 
+        }
+
+        /* SECTION 03: ABOUT */
+        .about-layout {
+            display: grid; grid-template-columns: 1fr; gap: 5rem; align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 12vh;
+        }
+        
+        @media (min-width: 768px) { .about-layout { grid-template-columns: 5fr 7fr; } }
+
+        .creator-card { padding: 1rem; aspect-ratio: 4 / 5; width: 100%; }
+        .creator-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%); }
+
+        .about-text h2 { font-size: 4.5rem; margin-bottom: 2rem; letter-spacing: -0.01em; }
+        .about-text p { font-size: 1.25rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+
+        /* SECTION 04: CONTACT */
+        .contact {
+            min-height: 85vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        .contact h2 { font-size: clamp(4rem, 11vw, 10rem); margin-bottom: 3rem; letter-spacing: 0.02em; }
+
+        .contact-links a {
+            display: block; font-family: 'Oswald', sans-serif; font-size: 2.5rem;
+            color: var(--text-muted); text-decoration: none; margin-bottom: 1.5rem;
+            text-transform: uppercase; transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .contact-links a:hover { color: var(--accent-muted-red); transform: translateY(-5px); }
+
+        /* ==========================================
+           04. MOTION & INTERACTION
+           ========================================== */
+        .cursor {
+            position: fixed; top: 0; left: 0; width: 8px; height: 8px;
+            background: var(--accent-muted-red); border-radius: 50%;
+            pointer-events: none; z-index: 10000; transition: transform 0.08s ease;
+        }
+        .cursor-follower {
+            position: fixed; top: 0; left: 0; width: 44px; height: 44px;
+            border: 1px solid rgba(123, 36, 36, 0.6); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease, background-color 0.25s ease;
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-light"></div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- SECTION 01: HERO -->
+    <section class="hero">
+        <div class="hero-video-wrapper">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="showreel.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="hero-content liquid-glass reveal" style="transform: translateY(0); opacity: 1;">
+            <h1>ENFANCY</h1>
+            <p>Where cinematic storytelling meets content that performs.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 02: WORK -->
+    <section id="work">
+        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 6vh; letter-spacing: 0.05em;">Selected Works</h2>
+        <div class="work-grid">
+            
+            <div class="work-row row-1">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <video autoplay muted loop playsinline><source src="project1.mp4" type="video/mp4"></video>
+                    <div class="work-meta"><h3>Project Alpha</h3></div>
+                </div>
+            </div>
+            
+            <div class="work-row row-2">
+                <div class="work-item ig-format liquid-glass reveal" data-speed="0.03">
+                    <video autoplay muted loop playsinline><source src="project2.mp4" type="video/mp4"></video>
+                    <div class="work-meta"><h3>Commercial Vibe</h3></div>
+                </div>
+            </div>
+            
+            <div class="work-row row-3">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <video autoplay muted loop playsinline><source src="project3.mp4" type="video/mp4"></video>
+                    <div class="work-meta"><h3>Music Video</h3></div>
+                </div>
+            </div>
+            
+            <div class="work-row row-4">
+                <div class="work-item ig-format liquid-glass reveal" data-speed="-0.02">
+                    <video autoplay muted loop playsinline><source src="project4.mp4" type="video/mp4"></video>
+                    <div class="work-meta"><h3>Brand Campaign</h3></div>
+                </div>
+            </div>
+            
+            <div class="work-row row-5">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <video autoplay muted loop playsinline><source src="project5.mp4" type="video/mp4"></video>
+                    <div class="work-meta"><h3>Short Film</h3></div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- SECTION 03: ABOUT -->
+    <section id="about">
+        <div class="about-layout">
+            <div class="creator-card liquid-glass reveal">
+                <img src="profile.jpg" alt="Pallab - Enfancy Films">
+            </div>
+            <div class="about-text reveal">
+                <h2>The Mind Behind The Lens.</h2>
+                <p>I don't build generic timelines. I engineer attention. As Pallab, the driving force behind Enfancy Films, my obsession lies in the intersection of high-end cinematic aesthetics and modern digital retention.</p>
+                <p>If it doesn't look expensive, we don't shoot it. If it doesn't hold the eye, we don't export it.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 04: CONTACT -->
+    <section id="contact" class="contact">
+        <h2 class="reveal">LET'S TALK.</h2>
+        <div class="contact-links reveal">
+            <a href="https://instagram.com/enfancy" target="_blank" class="hover-target">@enfancy</a>
+            <a href="mailto:contactendgum@gmail.com" class="hover-target">contactendgum@gmail.com</a>
+        </div>
+    </section>
+
+    <script>
+        // --- 01. CUSTOM CURSOR ---
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        const hoverTargets = document.querySelectorAll('a, .work-item');
+
+        let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        });
+
+        function animateFollower() {
+            followerX += (mouseX - followerX) * 0.16;
+            followerY += (mouseY - followerY) * 0.16;
+            follower.style.transform = `translate3d(${followerX - 22}px, ${followerY - 22}px, 0)`;
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => {
+                follower.style.width = '88px'; follower.style.height = '88px';
+                follower.style.transform = `translate3d(${followerX - 44}px, ${followerY - 44}px, 0)`;
+                follower.style.borderColor = 'var(--text-cream)';
+                follower.style.backgroundColor = 'rgba(244, 240, 235, 0.04)';
+            });
+            target.addEventListener('mouseleave', () => {
+                follower.style.width = '44px'; follower.style.height = '44px';
+                follower.style.borderColor = 'rgba(123, 36, 36, 0.6)';
+                follower.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // --- 02. LIQUID GLASS DYNAMIC LIGHTING ---
+        const glassPanels = document.querySelectorAll('.liquid-glass');
+        glassPanels.forEach(panel => {
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                panel.style.setProperty('--mouse-x', `${x}px`);
+                panel.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // --- 03. SCROLL REVEALS ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.classList.add('active'); }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- 04. PARALLAX DRIFT ---
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.work-item[data-speed]');
+            parallaxElements.forEach(el => {
+                const speed = el.getAttribute('data-speed');
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
