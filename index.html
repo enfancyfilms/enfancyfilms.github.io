@@ -93,7 +93,7 @@
            03. LAYOUT & SECTIONS
            ========================================== */
         section {
-            padding: 15vh 6vw;
+            padding: 10vh 4vw;
             position: relative;
             z-index: 2;
         }
@@ -133,27 +133,21 @@
             color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;
         }
 
-        /* SECTION 02: WORK (Independent Rows - Staggered Left and Right) */
+        /* SECTION 02: WORK (Space-Efficient Masonry Columns) */
         .work-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12vh; 
-            margin-top: 8vh;
-            padding-bottom: 10vh; 
+            column-count: 3;
+            column-gap: 2rem;
+            margin-top: 4vh;
+            padding-bottom: 5vh;
         }
 
-        .work-row {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            width: 100%;
-            align-items: center;
-        }
-
-        /* Parallax container wraps the video entirely to avoid shaking bugs */
         .parallax-wrap {
             width: 100%;
+            display: inline-block;
+            margin-bottom: 2rem;
             transition: transform 0.1s ease-out;
             will-change: transform;
+            break-inside: avoid;
         }
 
         .work-item {
@@ -164,11 +158,19 @@
             backface-visibility: hidden;
             transform: scale(1) translate3d(0, 0, 0);
             will-change: transform;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        .yt-format { aspect-ratio: 16 / 9; }
-        .ig-format { aspect-ratio: 9 / 16; width: 100%; max-height: 85vh; }
+        /* 1080p Horizontal Formats (16:9) */
+        .yt-format { 
+            aspect-ratio: 16 / 9; 
+        }
+
+        /* 1080p Vertical Formats (Shorts / Reels - 9:16) */
+        .ig-format { 
+            aspect-ratio: 9 / 16; 
+            width: 100%; 
+        }
 
         .work-item video {
             width: 100%; height: 100%; object-fit: cover;
@@ -179,9 +181,8 @@
             transform: scale(1.001) translateZ(0);
         }
 
-        /* Interactive Ultra-Smooth Zoom Highlight State on the item itself */
         .work-item:hover {
-            transform: scale(1.04) translate3d(0, 0, 0);
+            transform: scale(1.025) translate3d(0, 0, 0);
         }
 
         .work-item:hover video {
@@ -190,40 +191,35 @@
         }
 
         .work-meta {
-            position: absolute; bottom: 2.5rem; left: 2.5rem; z-index: 3;
+            position: absolute; bottom: 1.25rem; left: 1.25rem; z-index: 3;
             pointer-events: none;
         }
 
         .work-meta h3 { 
-            font-size: 2.2rem; 
+            font-size: 1.3rem; 
             text-shadow: 0 4px 16px rgba(0,0,0,0.9); 
             letter-spacing: 0.05em; 
         }
 
-        /* Layout Columns */
-        .row-1 .parallax-wrap { grid-column: 1 / 9; }   
-        .row-2 .parallax-wrap { grid-column: 7 / 11; }  
-        .row-3 .parallax-wrap { grid-column: 3 / 11; }  
-        .row-4 .parallax-wrap { grid-column: 8 / 12; }  
-        .row-5 .parallax-wrap { grid-column: 2 / 10; }  
+        @media (max-width: 960px) {
+            .work-grid { column-count: 2; }
+        }
 
-        @media (max-width: 768px) {
-            .work-row { display: block; }
-            .parallax-wrap { width: 100% !important; margin-bottom: 6vh; }
-            .ig-format { aspect-ratio: 4 / 5; max-height: none; } 
+        @media (max-width: 600px) {
+            .work-grid { column-count: 1; }
         }
 
         /* AUDIO FLOATING STATUS LABELS */
         .audio-hint {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 1rem;
+            right: 1rem;
             background: rgba(7, 6, 6, 0.85);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(10px);
-            padding: 0.5rem 0.9rem;
+            padding: 0.4rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-cream);
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -234,7 +230,7 @@
             z-index: 4;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .work-item:hover .audio-hint {
@@ -245,7 +241,7 @@
         /* SECTION 03: ABOUT */
         .about-layout {
             display: grid; grid-template-columns: 1fr; gap: 5rem; align-items: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 12vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 10vh;
         }
         
         @media (min-width: 768px) { .about-layout { grid-template-columns: 5fr 7fr; } }
@@ -271,7 +267,6 @@
         }
         .contact-links a:hover { color: var(--accent-muted-red); transform: translateY(-5px); }
 
-        /* Social icon row */
         .social-icons {
             display: flex; justify-content: center; align-items: center;
             gap: 2.5rem; margin-bottom: 2.5rem;
@@ -287,7 +282,6 @@
         .social-icon-link:hover {
             color: var(--accent-muted-red); transform: translateY(-5px);
         }
-        /* Email shown as plain text link below icons */
         .contact-email {
             font-family: 'Inter', sans-serif !important;
             font-size: 1rem !important;
@@ -308,18 +302,19 @@
         .cursor {
             position: fixed; top: 0; left: 0; width: 8px; height: 8px;
             background: var(--accent-muted-red); border-radius: 50%;
-            pointer-events: none; z-index: 10000; transition: transform 0.08s ease;
+            pointer-events: none; z-index: 10000; transition: transform 0.02s linear;
         }
         .cursor-follower {
             position: fixed; top: 0; left: 0; width: 44px; height: 44px;
             border: 1px solid rgba(123, 36, 36, 0.6); border-radius: 50%;
             pointer-events: none; z-index: 9999;
-            transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease, background-color 0.25s ease;
+            transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+            will-change: transform;
         }
 
         .reveal {
-            opacity: 0; transform: translateY(50px);
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0; transform: translateY(40px);
+            transition: all 1.0s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
     </style>
@@ -344,86 +339,104 @@
 
     <!-- SECTION 02: WORK -->
     <section id="work">
-        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 6vh; letter-spacing: 0.05em;">Selected Works</h2>
+        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 4vh; letter-spacing: 0.05em;">Selected Works</h2>
         <div class="work-grid">
             
-            <!-- ROW 1 -->
-            <div class="work-row row-1">
-                <div class="parallax-wrap" data-speed="0.01">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project1.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+            <!-- TILE 1: Horizontal Video (1080p - 16:9) -->
+            <div class="parallax-wrap" data-speed="0.01">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project1.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- ROW 2 -->
-            <div class="work-row row-2">
-                <div class="parallax-wrap" data-speed="0.03">
-                    <div class="work-item ig-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project2.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+            <!-- TILE 2: Vertical Reel / Shorts (1080p - 9:16) -->
+            <div class="parallax-wrap" data-speed="0.02">
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project2.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- ROW 3 -->
-            <div class="work-row row-3">
-                <div class="parallax-wrap" data-speed="0.015">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project3.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+            <!-- TILE 3: Horizontal Video (1080p - 16:9) -->
+            <div class="parallax-wrap" data-speed="0.01">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project3.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- ROW 4 -->
-            <div class="work-row row-4">
-                <div class="parallax-wrap" data-speed="0.02">
-                    <div class="work-item ig-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project4.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+            <!-- TILE 4: Vertical Reel / Shorts (1080p - 9:16) -->
+            <div class="parallax-wrap" data-speed="0.02">
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project4.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- ROW 5 -->
-            <div class="work-row row-5">
-                <div class="parallax-wrap" data-speed="0.01">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project5.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+            <!-- TILE 5: Horizontal Video (1080p - 16:9) -->
+            <div class="parallax-wrap" data-speed="0.01">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project5.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+            </div>
+
+            <!-- TILE 6: Vertical Reel / Shorts (New Vertical 1080p - 9:16) -->
+            <div class="parallax-wrap" data-speed="0.02">
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project6.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+            </div>
+
+            <!-- TILE 7: Horizontal Video (New Horizontal 1080p - 16:9) -->
+            <div class="parallax-wrap" data-speed="0.01">
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project7.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
             </div>
             
@@ -477,7 +490,7 @@
     </section>
 
     <script>
-        // --- 01. CUSTOM CURSOR ---
+        // --- 01. FAST CURSOR FOLLOW-THROUGH ---
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
         const hoverTargets = document.querySelectorAll('a, .work-item');
@@ -490,8 +503,8 @@
         });
 
         function animateFollower() {
-            followerX += (mouseX - followerX) * 0.16;
-            followerY += (mouseY - followerY) * 0.16;
+            followerX += (mouseX - followerX) * 0.45;
+            followerY += (mouseY - followerY) * 0.45;
             follower.style.transform = `translate3d(${followerX - 22}px, ${followerY - 22}px, 0)`;
             requestAnimationFrame(animateFollower);
         }
@@ -499,8 +512,7 @@
 
         hoverTargets.forEach(target => {
             target.addEventListener('mouseenter', () => {
-                follower.style.width = '88px'; follower.style.height = '88px';
-                follower.style.transform = `translate3d(${followerX - 44}px, ${followerY - 44}px, 0)`;
+                follower.style.width = '70px'; follower.style.height = '70px';
                 follower.style.borderColor = 'var(--text-cream)';
                 follower.style.backgroundColor = 'rgba(244, 240, 235, 0.04)';
             });
@@ -525,7 +537,6 @@
             });
         }
 
-        // Global Page Interaction Listener
         document.addEventListener('click', () => {
             if (isAudioUnlocked) return;
             
@@ -538,7 +549,6 @@
             }
             updateAudioLabels();
             
-            // Check if cursor is currently hovering a video tile when the unlock click happens
             const hoveredItem = document.querySelector('.work-item:hover video');
             if (hoveredItem) {
                 hoveredItem.muted = false;
@@ -549,7 +559,6 @@
         portfolioItems.forEach(item => {
             const video = item.querySelector('video');
 
-            // Explicitly force ensure initial configuration state on start
             if (video) {
                 video.autoplay = false;
                 video.muted = true;
@@ -567,17 +576,13 @@
                 
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(() => { /* Safe context bypass fallback */ });
+                    playPromise.catch(() => { });
                 }
             });
 
             item.addEventListener('mouseleave', () => {
                 if (!video) return;
-                
-                // CRITICAL FIXES: 
-                // 1. Completely freeze and pause playback execution timeline instantly on mouse leave
                 video.pause();
-                // 2. Force re-mute baseline
                 video.muted = true;
             });
         });
