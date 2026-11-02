@@ -93,7 +93,7 @@
            03. LAYOUT & SECTIONS
            ========================================== */
         section {
-            padding: 10vh 4vw;
+            padding: clamp(5rem, 10vh, 9rem) clamp(1.25rem, 4vw, 5rem);
             position: relative;
             z-index: 2;
         }
@@ -133,21 +133,27 @@
             color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;
         }
 
-        /* SECTION 02: WORK (Space-Efficient Masonry Columns) */
+        /* SECTION 02: WORK — a dense 12-column editorial mosaic */
         .work-grid {
-            column-count: 3;
-            column-gap: 2rem;
-            margin-top: 4vh;
-            padding-bottom: 5vh;
+            --tile-gap: clamp(0.65rem, 1vw, 1.25rem);
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            grid-auto-rows: clamp(8px, 1.04vw, 20px);
+            grid-auto-flow: dense;
+            gap: var(--tile-gap);
+            margin-top: clamp(2rem, 4vh, 4rem);
         }
 
+        .work-row {
+            display: contents;
+        }
+
+        /* Each video keeps its real format while the grid fills every available gap. */
         .parallax-wrap {
             width: 100%;
-            display: inline-block;
-            margin-bottom: 2rem;
+            align-self: start;
             transition: transform 0.1s ease-out;
             will-change: transform;
-            break-inside: avoid;
         }
 
         .work-item {
@@ -158,19 +164,11 @@
             backface-visibility: hidden;
             transform: scale(1) translate3d(0, 0, 0);
             will-change: transform;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 1080p Horizontal Formats (16:9) */
-        .yt-format { 
-            aspect-ratio: 16 / 9; 
-        }
-
-        /* 1080p Vertical Formats (Shorts / Reels - 9:16) */
-        .ig-format { 
-            aspect-ratio: 9 / 16; 
-            width: 100%; 
-        }
+        .yt-format { aspect-ratio: 16 / 9; }
+        .ig-format { aspect-ratio: 9 / 16; width: 100%; }
 
         .work-item video {
             width: 100%; height: 100%; object-fit: cover;
@@ -181,8 +179,9 @@
             transform: scale(1.001) translateZ(0);
         }
 
+        /* Interactive Ultra-Smooth Zoom Highlight State on the item itself */
         .work-item:hover {
-            transform: scale(1.025) translate3d(0, 0, 0);
+            transform: scale(1.04) translate3d(0, 0, 0);
         }
 
         .work-item:hover video {
@@ -191,35 +190,41 @@
         }
 
         .work-meta {
-            position: absolute; bottom: 1.25rem; left: 1.25rem; z-index: 3;
+            position: absolute; bottom: 2.5rem; left: 2.5rem; z-index: 3;
             pointer-events: none;
         }
 
         .work-meta h3 { 
-            font-size: 1.3rem; 
+            font-size: 2.2rem; 
             text-shadow: 0 4px 16px rgba(0,0,0,0.9); 
             letter-spacing: 0.05em; 
         }
 
-        @media (max-width: 960px) {
-            .work-grid { column-count: 2; }
-        }
+        /* A 16:9 tile spans six columns; a Reel spans three. Dense packing avoids dead space. */
+        .yt-tile { grid-column: span 6; grid-row: span 13; }
+        .ig-tile { grid-column: span 3; grid-row: span 20; }
 
-        @media (max-width: 600px) {
-            .work-grid { column-count: 1; }
+        @media (max-width: 768px) {
+            .work-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-auto-rows: auto;
+                gap: 1rem;
+            }
+            .parallax-wrap { grid-column: span 2; grid-row: auto; }
+            .ig-format { aspect-ratio: 9 / 16; width: min(100%, 26rem); margin-inline: auto; }
         }
 
         /* AUDIO FLOATING STATUS LABELS */
         .audio-hint {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             background: rgba(7, 6, 6, 0.85);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(10px);
-            padding: 0.4rem 0.75rem;
+            padding: 0.5rem 0.9rem;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--text-cream);
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -230,7 +235,7 @@
             z-index: 4;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
         
         .work-item:hover .audio-hint {
@@ -241,7 +246,7 @@
         /* SECTION 03: ABOUT */
         .about-layout {
             display: grid; grid-template-columns: 1fr; gap: 5rem; align-items: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 10vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 12vh;
         }
         
         @media (min-width: 768px) { .about-layout { grid-template-columns: 5fr 7fr; } }
@@ -267,6 +272,7 @@
         }
         .contact-links a:hover { color: var(--accent-muted-red); transform: translateY(-5px); }
 
+        /* Social icon row */
         .social-icons {
             display: flex; justify-content: center; align-items: center;
             gap: 2.5rem; margin-bottom: 2.5rem;
@@ -282,6 +288,7 @@
         .social-icon-link:hover {
             color: var(--accent-muted-red); transform: translateY(-5px);
         }
+        /* Email shown as plain text link below icons */
         .contact-email {
             font-family: 'Inter', sans-serif !important;
             font-size: 1rem !important;
@@ -302,19 +309,32 @@
         .cursor {
             position: fixed; top: 0; left: 0; width: 8px; height: 8px;
             background: var(--accent-muted-red); border-radius: 50%;
-            pointer-events: none; z-index: 10000; transition: transform 0.02s linear;
+            pointer-events: none; z-index: 10000;
+            opacity: 0; will-change: transform, opacity;
         }
         .cursor-follower {
             position: fixed; top: 0; left: 0; width: 44px; height: 44px;
             border: 1px solid rgba(123, 36, 36, 0.6); border-radius: 50%;
             pointer-events: none; z-index: 9999;
-            transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-            will-change: transform;
+            opacity: 0;
+            transition: width 0.16s ease, height 0.16s ease, border-color 0.16s ease, background-color 0.16s ease, opacity 0.12s ease;
+            will-change: transform, width, height, opacity;
+        }
+        .cursor.is-visible, .cursor-follower.is-visible { opacity: 1; }
+        .cursor-follower.is-hovering {
+            width: 88px; height: 88px;
+            border-color: var(--text-cream);
+            background-color: rgba(244, 240, 235, 0.04);
+        }
+
+        @media (hover: none), (pointer: coarse) {
+            * { cursor: auto; }
+            .cursor, .cursor-follower { display: none; }
         }
 
         .reveal {
-            opacity: 0; transform: translateY(40px);
-            transition: all 1.0s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0; transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
     </style>
@@ -339,104 +359,118 @@
 
     <!-- SECTION 02: WORK -->
     <section id="work">
-        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 4vh; letter-spacing: 0.05em;">Selected Works</h2>
+        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 6vh; letter-spacing: 0.05em;">Selected Works</h2>
         <div class="work-grid">
             
-            <!-- TILE 1: Horizontal Video (1080p - 16:9) -->
-            <div class="parallax-wrap" data-speed="0.01">
-                <div class="work-item yt-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 1 -->
+            <div class="work-row row-1">
+                <div class="parallax-wrap yt-tile" data-speed="0.01">
+                    <div class="work-item yt-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project1.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project1.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- TILE 2: Vertical Reel / Shorts (1080p - 9:16) -->
-            <div class="parallax-wrap" data-speed="0.02">
-                <div class="work-item ig-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 2 -->
+            <div class="work-row row-2">
+                <div class="parallax-wrap ig-tile" data-speed="0.03">
+                    <div class="work-item ig-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project2.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project2.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- TILE 3: Horizontal Video (1080p - 16:9) -->
-            <div class="parallax-wrap" data-speed="0.01">
-                <div class="work-item yt-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 3 -->
+            <div class="work-row row-3">
+                <div class="parallax-wrap yt-tile" data-speed="0.015">
+                    <div class="work-item yt-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project3.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project3.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- TILE 4: Vertical Reel / Shorts (1080p - 9:16) -->
-            <div class="parallax-wrap" data-speed="0.02">
-                <div class="work-item ig-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 4 -->
+            <div class="work-row row-4">
+                <div class="parallax-wrap ig-tile" data-speed="0.02">
+                    <div class="work-item ig-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project4.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project4.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
             
-            <!-- TILE 5: Horizontal Video (1080p - 16:9) -->
-            <div class="parallax-wrap" data-speed="0.01">
-                <div class="work-item yt-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 5 -->
+            <div class="work-row row-5">
+                <div class="parallax-wrap yt-tile" data-speed="0.01">
+                    <div class="work-item yt-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project5.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project5.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
 
-            <!-- TILE 6: Vertical Reel / Shorts (New Vertical 1080p - 9:16) -->
-            <div class="parallax-wrap" data-speed="0.02">
-                <div class="work-item ig-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 6 — Instagram Reel -->
+            <div class="work-row row-6">
+                <div class="parallax-wrap ig-tile" data-speed="0.025">
+                    <div class="work-item ig-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project6.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project6.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
 
-            <!-- TILE 7: Horizontal Video (New Horizontal 1080p - 16:9) -->
-            <div class="parallax-wrap" data-speed="0.01">
-                <div class="work-item yt-format liquid-glass reveal">
-                    <div class="audio-hint">
-                        <span class="hint-icon">🔊</span>
-                        <span class="hint-text">Click anywhere to unlock audio</span>
+            <!-- ROW 7 — YouTube long-form -->
+            <div class="work-row row-7">
+                <div class="parallax-wrap yt-tile" data-speed="0.012">
+                    <div class="work-item yt-format liquid-glass reveal">
+                        <div class="audio-hint">
+                            <span class="hint-icon">🔇</span>
+                            <span class="hint-text">Click anywhere to unlock audio</span>
+                        </div>
+                        <video loop playsinline preload="auto">
+                            <source src="project7.mp4" type="video/mp4">
+                        </video>
+                        <div class="work-meta"></div>
                     </div>
-                    <video loop playsinline preload="auto">
-                        <source src="project7.mp4" type="video/mp4">
-                    </video>
-                    <div class="work-meta"></div>
                 </div>
             </div>
             
@@ -490,36 +524,46 @@
     </section>
 
     <script>
-        // --- 01. FAST CURSOR FOLLOW-THROUGH ---
+        // --- 01. CUSTOM CURSOR ---
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
         const hoverTargets = document.querySelectorAll('a, .work-item');
 
         let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
+        let followerRadius = 22;
+        let cursorIsReady = false;
 
-        document.addEventListener('mousemove', (e) => {
+        document.addEventListener('pointermove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
-            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+            cursor.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+
+            // Start directly under the pointer, then use only a very light cinematic ease.
+            if (!cursorIsReady) {
+                followerX = mouseX;
+                followerY = mouseY;
+                cursor.classList.add('is-visible');
+                follower.classList.add('is-visible');
+                cursorIsReady = true;
+            }
         });
 
         function animateFollower() {
-            followerX += (mouseX - followerX) * 0.45;
-            followerY += (mouseY - followerY) * 0.45;
-            follower.style.transform = `translate3d(${followerX - 22}px, ${followerY - 22}px, 0)`;
+            // The old CSS transform transition plus 0.16 interpolation made the ring lag twice.
+            followerX += (mouseX - followerX) * 0.52;
+            followerY += (mouseY - followerY) * 0.52;
+            follower.style.transform = `translate3d(${followerX - followerRadius}px, ${followerY - followerRadius}px, 0)`;
             requestAnimationFrame(animateFollower);
         }
         animateFollower();
 
         hoverTargets.forEach(target => {
             target.addEventListener('mouseenter', () => {
-                follower.style.width = '70px'; follower.style.height = '70px';
-                follower.style.borderColor = 'var(--text-cream)';
-                follower.style.backgroundColor = 'rgba(244, 240, 235, 0.04)';
+                followerRadius = 44;
+                follower.classList.add('is-hovering');
             });
             target.addEventListener('mouseleave', () => {
-                follower.style.width = '44px'; follower.style.height = '44px';
-                follower.style.borderColor = 'rgba(123, 36, 36, 0.6)';
-                follower.style.backgroundColor = 'transparent';
+                followerRadius = 22;
+                follower.classList.remove('is-hovering');
             });
         });
 
@@ -537,6 +581,7 @@
             });
         }
 
+        // Global Page Interaction Listener
         document.addEventListener('click', () => {
             if (isAudioUnlocked) return;
             
@@ -549,6 +594,7 @@
             }
             updateAudioLabels();
             
+            // Check if cursor is currently hovering a video tile when the unlock click happens
             const hoveredItem = document.querySelector('.work-item:hover video');
             if (hoveredItem) {
                 hoveredItem.muted = false;
@@ -559,6 +605,7 @@
         portfolioItems.forEach(item => {
             const video = item.querySelector('video');
 
+            // Explicitly force ensure initial configuration state on start
             if (video) {
                 video.autoplay = false;
                 video.muted = true;
@@ -576,13 +623,17 @@
                 
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(() => { });
+                    playPromise.catch(() => { /* Safe context bypass fallback */ });
                 }
             });
 
             item.addEventListener('mouseleave', () => {
                 if (!video) return;
+                
+                // CRITICAL FIXES: 
+                // 1. Completely freeze and pause playback execution timeline instantly on mouse leave
                 video.pause();
+                // 2. Force re-mute baseline
                 video.muted = true;
             });
         });
@@ -607,15 +658,7 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        // --- 05. STABILIZED PARALLAX DRIFT CONTROLLER ---
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallaxWraps = document.querySelectorAll('.parallax-wrap');
-            parallaxWraps.forEach(wrap => {
-                const speed = wrap.getAttribute('data-speed');
-                wrap.style.transform = `translate3d(0, ${scrolled * speed}px, 0)`;
-            });
-        });
+        // Keep the gallery aligned: independent scroll offsets made the visual gutters drift.
     </script>
 </body>
 </html>
