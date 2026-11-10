@@ -29,7 +29,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; 
         }
 
         body {
@@ -93,7 +92,7 @@
            03. LAYOUT & SECTIONS
            ========================================== */
         section {
-            padding: clamp(5rem, 10vh, 9rem) clamp(1.25rem, 4vw, 5rem);
+            padding: 15vh 6vw;
             position: relative;
             z-index: 2;
         }
@@ -133,27 +132,27 @@
             color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;
         }
 
-        /* SECTION 02: WORK — a dense 12-column editorial mosaic */
+        /* SECTION 02: WORK */
+        .work-collection + .work-collection {
+            margin-top: clamp(4rem, 9vh, 8rem);
+        }
+
+        .work-collection-title {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+        }
+
         .work-grid {
-            --tile-gap: clamp(0.65rem, 1vw, 1.25rem);
             display: grid;
-            grid-template-columns: repeat(12, minmax(0, 1fr));
-            grid-auto-rows: clamp(8px, 1.04vw, 20px);
-            grid-auto-flow: dense;
-            gap: var(--tile-gap);
-            margin-top: clamp(2rem, 4vh, 4rem);
-        }
-
-        .work-row {
-            display: contents;
-        }
-
-        /* Each video keeps its real format while the grid fills every available gap. */
-        .parallax-wrap {
-            width: 100%;
-            align-self: start;
-            transition: transform 0.1s ease-out;
-            will-change: transform;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: start;
+            gap: clamp(1rem, 2.5vw, 2rem);
+            margin-top: 0;
+            padding-bottom: 0;
         }
 
         .work-item {
@@ -168,12 +167,16 @@
         }
 
         .yt-format { aspect-ratio: 16 / 9; }
-        .ig-format { aspect-ratio: 9 / 16; width: 100%; }
+        .ig-format {
+            aspect-ratio: 9 / 16;
+            width: min(100%, 360px);
+            justify-self: center;
+        }
 
         .work-item video {
             width: 100%; height: 100%; object-fit: cover;
             display: block;
-            opacity: 0.75; 
+            opacity: 0.75;
             filter: grayscale(40%) contrast(105%);
             transition: filter 0.5s ease, opacity 0.5s ease;
             transform: scale(1.001) translateZ(0);
@@ -185,7 +188,7 @@
         }
 
         .work-item:hover video {
-            opacity: 1; 
+            opacity: 1;
             filter: grayscale(0%) contrast(110%);
         }
 
@@ -194,24 +197,16 @@
             pointer-events: none;
         }
 
-        .work-meta h3 { 
-            font-size: 2.2rem; 
-            text-shadow: 0 4px 16px rgba(0,0,0,0.9); 
-            letter-spacing: 0.05em; 
+        .work-meta h3 {
+            font-size: 2.2rem;
+            text-shadow: 0 4px 16px rgba(0,0,0,0.9);
+            letter-spacing: 0.05em;
         }
 
-        /* A 16:9 tile spans six columns; a Reel spans three. Dense packing avoids dead space. */
-        .yt-tile { grid-column: span 6; grid-row: span 13; }
-        .ig-tile { grid-column: span 3; grid-row: span 20; }
-
         @media (max-width: 768px) {
-            .work-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                grid-auto-rows: auto;
-                gap: 1rem;
-            }
-            .parallax-wrap { grid-column: span 2; grid-row: auto; }
-            .ig-format { aspect-ratio: 9 / 16; width: min(100%, 26rem); margin-inline: auto; }
+            .work-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+            .ig-format { width: min(100%, 340px); }
+            .work-collection + .work-collection { margin-top: 4rem; }
         }
 
         /* AUDIO FLOATING STATUS LABELS */
@@ -306,30 +301,41 @@
         /* ==========================================
            04. MOTION & INTERACTION
            ========================================== */
-        .cursor {
-            position: fixed; top: 0; left: 0; width: 8px; height: 8px;
-            background: var(--accent-muted-red); border-radius: 50%;
-            pointer-events: none; z-index: 10000;
-            opacity: 0; will-change: transform, opacity;
-        }
+        .cursor,
         .cursor-follower {
-            position: fixed; top: 0; left: 0; width: 44px; height: 44px;
-            border: 1px solid rgba(123, 36, 36, 0.6); border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            opacity: 0;
-            transition: width 0.16s ease, height 0.16s ease, border-color 0.16s ease, background-color 0.16s ease, opacity 0.12s ease;
-            will-change: transform, width, height, opacity;
-        }
-        .cursor.is-visible, .cursor-follower.is-visible { opacity: 1; }
-        .cursor-follower.is-hovering {
-            width: 88px; height: 88px;
-            border-color: var(--text-cream);
-            background-color: rgba(244, 240, 235, 0.04);
+            display: none;
         }
 
-        @media (hover: none), (pointer: coarse) {
-            * { cursor: auto; }
-            .cursor, .cursor-follower { display: none; }
+        @media (hover: hover) and (pointer: fine) {
+            * { cursor: none; }
+
+            .cursor,
+            .cursor-follower {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+            }
+
+            .cursor {
+                width: 8px;
+                height: 8px;
+                background: var(--accent-muted-red);
+                border-radius: 50%;
+                z-index: 10000;
+                will-change: transform;
+            }
+
+            .cursor-follower {
+                width: 44px;
+                height: 44px;
+                border: 1px solid rgba(123, 36, 36, 0.6);
+                border-radius: 50%;
+                z-index: 9999;
+                will-change: transform, width, height;
+                transition: width 0.18s ease, height 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+            }
         }
 
         .reveal {
@@ -360,120 +366,110 @@
     <!-- SECTION 02: WORK -->
     <section id="work">
         <h2 class="reveal" style="font-size: 3rem; margin-bottom: 6vh; letter-spacing: 0.05em;">Selected Works</h2>
-        <div class="work-grid">
-            
-            <!-- ROW 1 -->
-            <div class="work-row row-1">
-                <div class="parallax-wrap yt-tile" data-speed="0.01">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project1.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+        <div class="work-collection">
+            <p class="work-collection-title reveal">Reels</p>
+            <div class="work-grid" aria-label="Vertical reel projects">
+                <!-- Reel 1: existing project2.mp4 -->
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project2.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
-            </div>
-            
-            <!-- ROW 2 -->
-            <div class="work-row row-2">
-                <div class="parallax-wrap ig-tile" data-speed="0.03">
-                    <div class="work-item ig-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project2.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ROW 3 -->
-            <div class="work-row row-3">
-                <div class="parallax-wrap yt-tile" data-speed="0.015">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project3.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ROW 4 -->
-            <div class="work-row row-4">
-                <div class="parallax-wrap ig-tile" data-speed="0.02">
-                    <div class="work-item ig-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project4.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ROW 5 -->
-            <div class="work-row row-5">
-                <div class="parallax-wrap yt-tile" data-speed="0.01">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project5.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ROW 6 — Instagram Reel -->
-            <div class="work-row row-6">
-                <div class="parallax-wrap ig-tile" data-speed="0.025">
-                    <div class="work-item ig-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project6.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+                <!-- Reel 2: existing project4.mp4 -->
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project4.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
-            </div>
 
-            <!-- ROW 7 — YouTube long-form -->
-            <div class="work-row row-7">
-                <div class="parallax-wrap yt-tile" data-speed="0.012">
-                    <div class="work-item yt-format liquid-glass reveal">
-                        <div class="audio-hint">
-                            <span class="hint-icon">🔇</span>
-                            <span class="hint-text">Click anywhere to unlock audio</span>
-                        </div>
-                        <video loop playsinline preload="auto">
-                            <source src="project7.mp4" type="video/mp4">
-                        </video>
-                        <div class="work-meta"></div>
+                <!-- Reel 3: placeholder — replace project6.mp4 with your reel -->
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
                     </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project6.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+
+                <!-- Reel 4: placeholder — replace project7.mp4 with your reel -->
+                <div class="work-item ig-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project7.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
                 </div>
             </div>
-            
+        </div>
+
+        <div class="work-collection">
+            <p class="work-collection-title reveal">Long-form</p>
+            <div class="work-grid" aria-label="Horizontal long-form video projects">
+                <!-- Long-form video 1: existing project1.mp4 -->
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project1.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+
+                <!-- Long-form video 2: existing project3.mp4 -->
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project3.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+
+                <!-- Long-form video 3: existing project5.mp4 -->
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project5.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+
+                <!-- Long-form video 4: placeholder — replace project8.mp4 with your video -->
+                <div class="work-item yt-format liquid-glass reveal">
+                    <div class="audio-hint">
+                        <span class="hint-icon">🔊</span>
+                        <span class="hint-text">Click anywhere to unlock audio</span>
+                    </div>
+                    <video loop playsinline preload="auto">
+                        <source src="project8.mp4" type="video/mp4">
+                    </video>
+                    <div class="work-meta"></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -507,7 +503,7 @@
                 <!-- YouTube -->
                 <a href="https://youtube.com/@enfancy" target="_blank" class="hover-target social-icon-link" aria-label="YouTube">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+                        <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.96-1.96A29 29 0 0023 12a29 29 0 00-.46-5.58z"/>
                         <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
                     </svg>
                 </a>
@@ -528,44 +524,65 @@
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
         const hoverTargets = document.querySelectorAll('a, .work-item');
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 
-        let mouseX = 0, mouseY = 0, followerX = 0, followerY = 0;
-        let followerRadius = 22;
-        let cursorIsReady = false;
+        if (finePointer.matches) {
+            const cursorSize = 8;
+            let pointerX = 0;
+            let pointerY = 0;
+            let followerX = 0;
+            let followerY = 0;
+            let followerSize = 44;
+            let hasPointerPosition = false;
+            const followerResponsiveness = 0.62;
 
-        document.addEventListener('pointermove', (e) => {
-            mouseX = e.clientX; mouseY = e.clientY;
-            cursor.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+            const renderCursor = () => {
+                cursor.style.transform = `translate3d(${pointerX - cursorSize / 2}px, ${pointerY - cursorSize / 2}px, 0)`;
+                follower.style.transform = `translate3d(${followerX - followerSize / 2}px, ${followerY - followerSize / 2}px, 0)`;
+            };
 
-            // Start directly under the pointer, then use only a very light cinematic ease.
-            if (!cursorIsReady) {
-                followerX = mouseX;
-                followerY = mouseY;
-                cursor.classList.add('is-visible');
-                follower.classList.add('is-visible');
-                cursorIsReady = true;
-            }
-        });
+            document.addEventListener('pointermove', (event) => {
+                pointerX = event.clientX;
+                pointerY = event.clientY;
 
-        function animateFollower() {
-            // The old CSS transform transition plus 0.16 interpolation made the ring lag twice.
-            followerX += (mouseX - followerX) * 0.52;
-            followerY += (mouseY - followerY) * 0.52;
-            follower.style.transform = `translate3d(${followerX - followerRadius}px, ${followerY - followerRadius}px, 0)`;
+                if (!hasPointerPosition) {
+                    followerX = pointerX;
+                    followerY = pointerY;
+                    hasPointerPosition = true;
+                }
+
+                renderCursor();
+            }, { passive: true });
+
+            const animateFollower = () => {
+                if (hasPointerPosition) {
+                    followerX += (pointerX - followerX) * followerResponsiveness;
+                    followerY += (pointerY - followerY) * followerResponsiveness;
+                    renderCursor();
+                }
+                requestAnimationFrame(animateFollower);
+            };
             requestAnimationFrame(animateFollower);
-        }
-        animateFollower();
 
-        hoverTargets.forEach(target => {
-            target.addEventListener('mouseenter', () => {
-                followerRadius = 44;
-                follower.classList.add('is-hovering');
+            hoverTargets.forEach(target => {
+                target.addEventListener('mouseenter', () => {
+                    followerSize = 88;
+                    follower.style.width = '88px';
+                    follower.style.height = '88px';
+                    follower.style.borderColor = 'var(--text-cream)';
+                    follower.style.backgroundColor = 'rgba(244, 240, 235, 0.04)';
+                    renderCursor();
+                });
+                target.addEventListener('mouseleave', () => {
+                    followerSize = 44;
+                    follower.style.width = '44px';
+                    follower.style.height = '44px';
+                    follower.style.borderColor = 'rgba(123, 36, 36, 0.6)';
+                    follower.style.backgroundColor = 'transparent';
+                    renderCursor();
+                });
             });
-            target.addEventListener('mouseleave', () => {
-                followerRadius = 22;
-                follower.classList.remove('is-hovering');
-            });
-        });
+        }
 
         // --- 02. BULLETPROOF HOVER ENGAGEMENT CONTROL ENGINE ---
         const portfolioItems = document.querySelectorAll('.work-item');
@@ -658,7 +675,6 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        // Keep the gallery aligned: independent scroll offsets made the visual gutters drift.
     </script>
 </body>
 </html>
